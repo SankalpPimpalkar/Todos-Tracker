@@ -17,8 +17,10 @@ export default function AuthLayout({
             const user = localStorage.getItem('cookieFallback')
             console.log('cookie', user)
 
-            if (user != '[]' || !user) {
+            if (user != '[]' || user) {
                 router.push("/")
+            } else {
+                router.push("/auth/login")
             }
         })()
     }, [])
