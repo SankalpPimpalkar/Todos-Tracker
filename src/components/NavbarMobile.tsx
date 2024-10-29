@@ -4,10 +4,12 @@ import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link';
 import appwriteService from '@/appwrite/functions';
+import useAuth from '@/context/useAuth';
 
 export default function NavbarMobile({ isOpen, toggleSidebar }: any) {
     const router = useRouter();
-    const [isloggingOut, setIsloggingOut] = useState(false)
+    const [isloggingOut, setIsloggingOut] = useState(false);
+    const { userData } = useAuth();
 
     const handleRedirect = (id: string) => {
         router.push(`/list/${id}`);
@@ -31,7 +33,7 @@ export default function NavbarMobile({ isOpen, toggleSidebar }: any) {
 
     return (
         <div className='block md:hidden'>
-            <div onClick={toggleSidebar} className="w-full fixed top-0 md:hidden flex items-center justify-between px-5 py-4 bg-primary">
+            <div className="w-full fixed top-0 md:hidden flex items-center justify-between px-5 py-4 bg-primary">
                 <div className="text-lg text-light font-bold">
                     😎 Next Todo
                 </div>
@@ -57,22 +59,20 @@ export default function NavbarMobile({ isOpen, toggleSidebar }: any) {
                             </h2>
 
                             <ul className="mt-2 space-y-2">
-                                {[1, 2, 3, 4, 5, 6].map(li => (
-                                    <li
-                                        onClick={() => handleRedirect(String(li))}
-                                        key={li}
-                                        className="w-full bg-warm text-secondary px-3 py-2 font-medium rounded flex items-center justify-between"
-                                    >
-                                        <h6>List {li}</h6>
+                                {
+                                    userData?.list.map((li: any) => (
+                                        <li onClick={() => handleRedirect(String(li?.$id))} key={li?.$id} className='w-full bg-warm text-secondary px-3 py-2 font-medium rounded flex items-center justify-between cursor-pointer'>
+                                            <h6>
+                                                {li.title}
+                                            </h6>
 
-                                        <button
-                                            onClick={handleDeleteList}
-                                            className="md:hover:rotate-90 duration-200 transition-all"
-                                        >
-                                            <X className="text-primary w-5 h-5" />
-                                        </button>
-                                    </li>
-                                ))}
+                                            <button
+                                                onClick={handleDeleteList} className='md:hover:rotate-90 duration-200 transition-all'>
+                                                <X className='text-primary w-5 h-5' />
+                                            </button>
+                                        </li>
+                                    ))
+                                }
                             </ul>
                         </div>
 
