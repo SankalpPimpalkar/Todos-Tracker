@@ -2,20 +2,19 @@
 "use client";
 
 import appwriteService from '@/appwrite/functions';
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import formatToMonthYear from '@/utils/formatToMonthYear'
+import { useParams } from 'next/navigation';
 
-type Params = Promise<{ id: string }>
 
-export default function List(props: { params: Params }) {
+export default function List() {
 
     const [todos, setTodos] = useState<any>(null);
-    const params = use(props.params)
-    const listId = params.id;
+    const params: any = useParams();
 
     useEffect(() => {
         (async () => {
-            const todos = await appwriteService.getTodosByListId(listId)
+            const todos = await appwriteService.getTodosByListId(params.id)
             console.log(todos)
             setTodos(todos)
         })()
