@@ -1,6 +1,5 @@
 "use client";
 
-import appwriteService from "@/appwrite/functions";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -14,9 +13,11 @@ export default function AuthLayout({
 
     useEffect(() => {
         (async () => {
-            const user = await appwriteService.getCurrentUser();
 
-            if (user) {
+            const user = localStorage.getItem('cookieFallback')
+            console.log('cookie', user)
+
+            if (user != '[]' || !user) {
                 router.push("/")
             }
         })()

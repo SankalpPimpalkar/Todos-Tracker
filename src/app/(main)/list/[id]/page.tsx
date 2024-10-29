@@ -22,23 +22,25 @@ export default function List() {
             <ul className="w-full max-w-xl space-y-2 mt-8">
                 {
                     ['1', '2', '3', '4', '5', '6'].map(todo => (
-                        <li key={todo} className="bg-primary px-5 py-4 rounded flex items-center justify-between">
+                        <li key={todo} className="bg-primary px-5 py-4 rounded ">
 
-                            <label htmlFor={todo} className="flex items-center cursor-pointer gap-5">
-                                <div>
-                                    <input type="checkbox" name={todo} id={todo} className="peer hidden" />
-                                    <span className="w-5 h-5 border border-warm rounded-full bg-transparent peer-checked:bg-warm flex items-center justify-center transition-all">
-                                    </span>
+                            <label htmlFor={todo} className="flex items-center justify-between cursor-pointer">
+                                <div className='flex items-center gap-5'>
+                                    <div>
+                                        <input type="checkbox" name={todo} id={todo} className="peer hidden" />
+                                        <span className="w-5 h-5 border border-warm rounded-full bg-transparent peer-checked:bg-warm flex items-center justify-center transition-all">
+                                        </span>
+                                    </div>
+
+                                    <p className='text-light/80 font-medium'>
+                                        Todo Text
+                                    </p>
                                 </div>
 
-                                <p className='text-light/80 font-medium'>
-                                    Todo Text
+                                <p className='text-sm text-light/60'>
+                                    2024-10-23
                                 </p>
                             </label>
-
-                            <p className='text-sm text-light/60'>
-                                2024-10-23
-                            </p>
                         </li>
                     ))
                 }
