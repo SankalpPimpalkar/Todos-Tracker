@@ -1,5 +1,5 @@
 import config from "./config";
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID, Databases, Query } from "appwrite";
 
 type UserSignup = {
     email: string,
@@ -18,13 +18,12 @@ client
     .setProject(config.appwriteProjectId)
 
 export const account = new Account(client);
+export const database = new Databases(client);
 
 export class AppwriteService {
 
     async createAccount({ email, password, name }: UserSignup) {
         try {
-
-
             const newUser = await account.create(ID.unique(), email, password, name);
 
             if (newUser) {
@@ -68,6 +67,31 @@ export class AppwriteService {
             console.log("logout error", error)
             throw error;
         }
+    }
+
+    async getList(userId: string) {
+
+        const list = await database.listDocuments(
+            config.appwriteDatabaseId,
+            config.appwriteCollectionListsId,
+            [
+                Query.equal('user', [userId]),
+                Query.orderDesc('$createdAt')
+            ]
+        )
+
+        return list;
+    }
+
+    async getTodosByListId(listId: string) {
+
+        const todos = await database.getDocument(
+            config.appwriteDatabaseId,
+            config.appwriteCollectionListsId,
+            listId
+        )
+
+        return todos;
     }
 }
 

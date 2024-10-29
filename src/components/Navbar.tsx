@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { History, LoaderCircle, Plus, X } from 'lucide-react'
 import React, { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link';
 import appwriteService from '@/appwrite/functions';
+import useAuth from '@/context/useAuth';
 
 export default function Navbar() {
 
     const router = useRouter();
-    const [isloggingOut, setIsloggingOut] = useState(false)
+    const [isloggingOut, setIsloggingOut] = useState(false);
+    const { userData } = useAuth();
 
     const handleRedirect = (id: string) => {
         router.push(`/list/${id}`)
@@ -43,10 +46,10 @@ export default function Navbar() {
 
                     <ul className='mt-2 space-y-2'>
                         {
-                            [1, 2, 3, 4, 5, 6].map(li => (
-                                <li onClick={() => handleRedirect(String(li))} key={li} className='w-full bg-warm text-secondary px-3 py-2 font-medium rounded flex items-center justify-between cursor-pointer'>
+                            userData?.list.map((li: any) => (
+                                <li onClick={() => handleRedirect(String(li?.$id))} key={li?.$id} className='w-full bg-warm text-secondary px-3 py-2 font-medium rounded flex items-center justify-between cursor-pointer'>
                                     <h6>
-                                        List {li}
+                                        {li.title}
                                     </h6>
 
                                     <button

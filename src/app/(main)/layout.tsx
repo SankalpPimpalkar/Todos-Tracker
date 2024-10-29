@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import appwriteService from "@/appwrite/functions";
@@ -26,10 +27,13 @@ export default function MainLayout({
         (async () => {
             try {
 
-                const user = await appwriteService.getCurrentUser();
-                console.log(user)
+                const user: any = await appwriteService.getCurrentUser();
 
                 if (user) {
+                    const list = await appwriteService.getList(user.$id);
+                    user.list = list.documents;
+                    console.log(user)
+
                     setAuthStatus(true);
                     setUserData(user)
                 }

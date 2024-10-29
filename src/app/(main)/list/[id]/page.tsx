@@ -1,12 +1,30 @@
-import React from 'react'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-export default function List() {
+import appwriteService from '@/appwrite/functions';
+import { use, useEffect, useState } from 'react'
+import formatToMonthYear from '@/utils/formatToMonthYear'
+
+export default function List({ params }: { params: { id: string } }) {
+
+    const [todos, setTodos] = useState<any>(null)
+    const route = use<any>(params);
+
+    useEffect(() => {
+        (async () => {
+            const todos = await appwriteService.getTodosByListId(route.id)
+            console.log(todos)
+            setTodos(todos)
+        })()
+    }, [])
+
     return (
         <div className='w-full min-h-dvh bg-black text-light p-6 md:p-10 select-none pt-20 md:pt-10'>
             <div className='flex items-start gap-8'>
                 <span className='font-bold text-3xl text-light/90 hidden flex-col items-center md:flex'>
-                    <p>Feb</p>
-                    <p>4</p>
+                    <p className='text-pretty text-start w-32'>
+                        {formatToMonthYear(todos?.$createdAt)}
+                    </p>
                 </span>
 
                 <span>

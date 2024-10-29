@@ -1,6 +1,7 @@
-import React from 'react'
+"use client";
 
 export default function Home() {
+
   return (
     <div className='bg-black w-full min-h-dvh'>
       Home
