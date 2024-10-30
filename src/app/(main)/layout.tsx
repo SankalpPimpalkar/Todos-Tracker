@@ -16,7 +16,7 @@ export default function MainLayout({
 }>) {
 
     const router = useRouter();
-    const { setAuthStatus, setUserData } = useAuth();
+    const { setAuthStatus, setUserData, setIsLoading } = useAuth();
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const toggleSidebar = () => {
@@ -26,7 +26,7 @@ export default function MainLayout({
     useEffect(() => {
         (async () => {
             try {
-
+                setIsLoading(true);
                 const user: any = await appwriteService.getCurrentUser();
 
                 if (user) {
@@ -42,6 +42,8 @@ export default function MainLayout({
                 console.log(error)
                 router.push("/auth/login");
 
+            } finally {
+                setIsLoading(false);
             }
         })();
     }, [])

@@ -6,9 +6,15 @@ export const AuthContext = createContext<{
     userData: any;
     setUserData: (user: any) => void;
     setAuthStatus: (status: boolean) => void;
+    isLoading: boolean
+    setIsLoading: (status: boolean) => void;
+    reFetchUser: () => void;
 }>({
     authStatus: false,
     setAuthStatus: () => { },
     userData: null,
-    setUserData: () => { }
+    setUserData: () => { },
+    isLoading: true,
+    setIsLoading: () => { },
+    reFetchUser: () => { }
 })

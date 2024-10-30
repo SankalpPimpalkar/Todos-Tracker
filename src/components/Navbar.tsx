@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { History, LoaderCircle, Plus, X } from 'lucide-react'
 import React, { FormEvent, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link';
 import appwriteService from '@/appwrite/functions';
 import useAuth from '@/context/useAuth';
@@ -11,6 +11,7 @@ export default function Navbar() {
     const router = useRouter();
     const [isloggingOut, setIsloggingOut] = useState(false);
     const { userData } = useAuth();
+    const param = useParams();
 
     const handleRedirect = (id: string) => {
         router.push(`/list/${id}`)
@@ -47,14 +48,14 @@ export default function Navbar() {
                     <ul className='mt-2 space-y-2'>
                         {
                             userData?.list.map((li: any) => (
-                                <li onClick={() => handleRedirect(String(li?.$id))} key={li?.$id} className='w-full bg-warm text-secondary px-3 py-2 font-medium rounded flex items-center justify-between cursor-pointer'>
+                                <li onClick={() => handleRedirect(String(li?.$id))} key={li?.$id} className={`w-full px-3 py-2 font-medium rounded flex items-center justify-between cursor-pointer ${param.id != li?.$id ? 'bg-secondary/30 text-light/60' : 'bg-warm text-secondary'}`}>
                                     <h6>
                                         {li.title}
                                     </h6>
 
                                     <button
                                         onClick={handleDeleteList} className='md:hover:rotate-90 duration-200 transition-all'>
-                                        <X className='text-primary w-5 h-5' />
+                                        <X className={`w-5 h-5 ${param.id != li?.$id ? 'text-light/60' : ' text-primary'}`} />
                                     </button>
                                 </li>
                             ))
@@ -62,7 +63,7 @@ export default function Navbar() {
                     </ul>
                 </div>
 
-                <button onClick={() => router.push('/newlist')} className='text-light font-normal mt-8 flex items-center gap-4 hover:bg-secondary/20 py-2 px-3 rounded w-full'>
+                <button onClick={() => router.push('/')} className='text-light font-normal mt-8 flex items-center gap-4 hover:bg-secondary/20 py-2 px-3 rounded w-full'>
                     <Plus />
                     <p>
                         New List

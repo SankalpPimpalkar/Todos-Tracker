@@ -69,6 +69,21 @@ export class AppwriteService {
         }
     }
 
+    async createNewList({ userId, title }: { userId: string, title: string }) {
+
+        const newList = await database.createDocument(
+            config.appwriteDatabaseId,
+            config.appwriteCollectionListsId,
+            ID.unique(),
+            {
+                user: userId,
+                title
+            }
+        )
+
+        return newList;
+    }
+
     async getList(userId: string) {
 
         const list = await database.listDocuments(
@@ -81,6 +96,42 @@ export class AppwriteService {
         )
 
         return list;
+    }
+
+    async createNewTodo({ content, user, listId }: { content: string, user: string, listId: string }) {
+
+        const todo = await database.createDocument(
+            config.appwriteDatabaseId,
+            config.appwriteCollectionTodosId,
+            ID.unique(),
+            {
+                content,
+                user,
+                isCompleted: false
+            }
+        )
+
+        if (todo) {
+
+            const listDetails = await database.getDocument(
+                config.appwriteDatabaseId,
+                config.appwriteCollectionListsId,
+                listId
+            )
+
+            if (listDetails) {
+                return await database.updateDocument(
+                    config.appwriteDatabaseId,
+                    config.appwriteCollectionListsId,
+                    listId,
+                    {
+                        todos: [todo, ...listDetails.todos]
+                    }
+                )
+            }
+        }
+
+        return null
     }
 
     async getTodosByListId(listId: string) {
