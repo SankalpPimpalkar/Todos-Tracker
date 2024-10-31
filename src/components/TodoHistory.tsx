@@ -6,22 +6,31 @@ import useAuth from '@/context/useAuth'
 import React, { useEffect, useState } from 'react'
 import formatToHistory from '@/utils/formatToHistory';
 import formatToDate from '@/utils/formatToDate'
-import { Check, X } from 'lucide-react';
+import { Check, LoaderCircle, X } from 'lucide-react';
 
 export default function TodoHistory() {
 
     const { userData } = useAuth();
-    const [history, setHistory] = useState<any>([])
+    const [history, setHistory] = useState<any>([]);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const getTodos = async () => {
+        if (userData) {
+            const todos = await appwriteService.getTodoByUserId(userData.$id);
+            const formattedTodos = formatToHistory(todos.documents)
+            setHistory(formattedTodos)
+            console.log("History Todos", formattedTodos)
+        }
+    }
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        await getTodos();
+        setIsRefreshing(false);
+    }
 
     useEffect(() => {
-        (async () => {
-            if (userData) {
-                const todos = await appwriteService.getTodoByUserId(userData.$id);
-                const formattedTodos = formatToHistory(todos.documents)
-                setHistory(formattedTodos)
-                console.log("History Todos", formattedTodos)
-            }
-        })()
+        getTodos()
     }, [userData])
 
     return (
@@ -30,7 +39,16 @@ export default function TodoHistory() {
                 Todo History
             </h1>
 
-            <div className='mt-6 space-y-6 overflow-y-auto h-full max-h-[40rem]'>
+            <button onClick={handleRefresh} disabled={isRefreshing} className='mt-3 bg-warm text-black font-medium text-sm px-4 py-2 rounded flex items-center gap-2 disabled:bg-warm/80'>
+                {
+                    isRefreshing && (
+                        <LoaderCircle className='animate-spin w-5 h-5' />
+                    )
+                }
+                Refresh
+            </button>
+
+            <div className='mt-3 space-y-6 overflow-y-auto h-full max-h-[40rem]'>
                 {
                     history.length > 0 ? history.map((elem: any) => (
                         <div key={elem.month}>

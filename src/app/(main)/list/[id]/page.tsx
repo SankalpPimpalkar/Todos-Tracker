@@ -20,14 +20,25 @@ export default function List() {
     const { userData } = useAuth();
     const [isAddingNewTodo, setIsAddingNewTodo] = useState(false);
 
+    const fetchTodos = async () => {
+        const todosData = await appwriteService.getTodosByListId(params.id);
+        setTodos(todosData.todos);
+        setIsLoading(false);
+    }
+
     useEffect(() => {
-        setIsLoading(true);
-        (async () => {
-            const todosData = await appwriteService.getTodosByListId(params.id);
-            setTodos(todosData.todos);
-            setIsLoading(false);
-        })()
+        fetchTodos()
     }, [params.id]);
+
+    const handleToggleStatus = async (todoId: string, status: boolean) => {
+
+        if (todoId.trim()) {
+            const updatedTodo = await appwriteService.toggleCompletionStatus({ todoId, status });
+
+            console.log("UpdatedTodo", updatedTodo);
+            await fetchTodos();
+        }
+    }
 
     const handleAddTodo = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -118,6 +129,7 @@ export default function List() {
                                                         name={todo?.$id}
                                                         id={todo?.$id}
                                                         className="peer hidden"
+                                                        onClick={() => handleToggleStatus(todo?.$id, todo?.isCompleted)}
                                                     />
                                                     <span className="w-5 h-5 border border-warm rounded-full bg-transparent peer-checked:bg-warm flex items-center justify-center transition-all"></span>
                                                 </div>

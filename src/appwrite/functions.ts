@@ -191,6 +191,20 @@ export class AppwriteService {
             ]
         )
     }
+
+    async toggleCompletionStatus({ todoId, status }: { todoId: string, status: boolean }) {
+
+        const updatedTodo = await database.updateDocument(
+            config.appwriteDatabaseId,
+            config.appwriteCollectionTodosId,
+            todoId,
+            {
+                isCompleted: !status
+            }
+        )
+
+        return updatedTodo;
+    }
 }
 
 const appwriteService = new AppwriteService();
