@@ -6,7 +6,7 @@ import Link from 'next/link';
 import appwriteService from '@/appwrite/functions';
 import useAuth from '@/context/useAuth';
 
-export default function NavbarMobile({ isOpen, toggleSidebar }: any) {
+export default function NavbarMobile({ isOpen, toggleSidebar, setIsModalOpen, setSelectedList }: any) {
     const router = useRouter();
     const [isloggingOut, setIsloggingOut] = useState(false);
     const { userData } = useAuth();
@@ -17,9 +17,11 @@ export default function NavbarMobile({ isOpen, toggleSidebar }: any) {
         toggleSidebar();
     }
 
-    const handleDeleteList = async (e: FormEvent) => {
+    const handleOpenModal = async (e: FormEvent, listId: string) => {
         e.stopPropagation();
-        console.log("Propagation Stopped");
+        console.log("Propogation Stopped", listId);
+        setSelectedList(listId);
+        setIsModalOpen(true);
     }
 
     const handleLogout = async () => {
@@ -35,9 +37,9 @@ export default function NavbarMobile({ isOpen, toggleSidebar }: any) {
     return (
         <div className='block md:hidden'>
             <div className="w-full fixed top-0 md:hidden flex items-center justify-between px-5 py-4 bg-primary">
-                <div className="text-lg text-light font-bold">
+                <Link href={'/'} className="text-lg text-light font-bold">
                     😎 Next Todo
-                </div>
+                </Link>
 
                 <button onClick={toggleSidebar}>
                     <Menu className="text-light w-6 h-6" />
@@ -68,7 +70,7 @@ export default function NavbarMobile({ isOpen, toggleSidebar }: any) {
                                             </h6>
 
                                             <button
-                                                onClick={handleDeleteList} className='md:hover:rotate-90 duration-200 transition-all'>
+                                                onClick={(e) => handleOpenModal(e, li.$id)} className='md:hover:rotate-90 duration-200 transition-all'>
                                                 <X className={`w-5 h-5 ${param.id != li?.$id ? 'text-light/60' : ' text-primary'}`} />
                                             </button>
                                         </li>

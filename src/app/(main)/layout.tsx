@@ -8,6 +8,7 @@ import useAuth from "@/context/useAuth";
 import Navbar from "@/components/Navbar";
 import NavbarMobile from "@/components/NavbarMobile";
 import TodoHistory from "@/components/TodoHistory";
+import DeleteListModal from "@/components/DeleteListModal";
 
 export default function MainLayout({
     children,
@@ -18,6 +19,8 @@ export default function MainLayout({
     const router = useRouter();
     const { setAuthStatus, setUserData, setIsLoading } = useAuth();
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedList, setSelectedList] = useState('')
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -50,13 +53,25 @@ export default function MainLayout({
 
     return (
         <div className="w-full min-h-dvh divide-x divide-light/10 flex flex-col md:flex-row">
-            <Navbar />
+            <Navbar
+                setIsModalOpen={setIsModalOpen}
+                setSelectedList={setSelectedList}
+            />
             <NavbarMobile
                 isOpen={isOpen}
                 toggleSidebar={toggleSidebar}
+                setIsModalOpen={setIsModalOpen}
+                setSelectedList={setSelectedList}
             />
             {children}
             <TodoHistory />
+            
+            <DeleteListModal
+                isOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                setSelectedList={setSelectedList}
+                selectedList={selectedList}
+            />
         </div>
     );
 }

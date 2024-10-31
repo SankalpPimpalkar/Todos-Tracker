@@ -6,7 +6,7 @@ import Link from 'next/link';
 import appwriteService from '@/appwrite/functions';
 import useAuth from '@/context/useAuth';
 
-export default function Navbar() {
+export default function Navbar({ setIsModalOpen, setSelectedList }: any) {
 
     const router = useRouter();
     const [isloggingOut, setIsloggingOut] = useState(false);
@@ -17,9 +17,11 @@ export default function Navbar() {
         router.push(`/list/${id}`)
     }
 
-    const handleDeleteList = async (e: FormEvent) => {
+    const handleOpenModal = async (e: FormEvent, listId: string) => {
         e.stopPropagation();
-        console.log("Propogation Stopped")
+        console.log("Propogation Stopped", listId)
+        setSelectedList(listId);
+        setIsModalOpen(true);
     }
 
     const handleLogout = async () => {
@@ -54,7 +56,7 @@ export default function Navbar() {
                                     </h6>
 
                                     <button
-                                        onClick={handleDeleteList} className='md:hover:rotate-90 duration-200 transition-all'>
+                                        onClick={(e) => handleOpenModal(e, li.$id)} className='md:hover:rotate-90 duration-200 transition-all'>
                                         <X className={`w-5 h-5 ${param.id != li?.$id ? 'text-light/60' : ' text-primary'}`} />
                                     </button>
                                 </li>

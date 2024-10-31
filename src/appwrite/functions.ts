@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import config from "./config";
 import { Client, Account, ID, Databases, Query } from "appwrite";
 
@@ -98,6 +99,40 @@ export class AppwriteService {
         return list;
     }
 
+    async deleteList(listId: string) {
+        const list = await database.getDocument(
+            config.appwriteDatabaseId,
+            config.appwriteCollectionListsId,
+            listId
+        )
+
+        let deletedTodosCount = 0;
+
+        if (list) {
+            list.todos.map((todo: any) => {
+                database.deleteDocument(
+                    config.appwriteDatabaseId,
+                    config.appwriteCollectionTodosId,
+                    todo.$id
+                ).then(() => deletedTodosCount++)
+            })
+
+            if (deletedTodosCount == list.todos.length) {
+                const deletedList = await database.deleteDocument(
+                    config.appwriteDatabaseId,
+                    config.appwriteCollectionListsId,
+                    listId
+                )
+
+                if (deletedList) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     async createNewTodo({ content, user, listId }: { content: string, user: string, listId: string }) {
 
         const todo = await database.createDocument(
@@ -143,6 +178,18 @@ export class AppwriteService {
         )
 
         return todos;
+    }
+
+    async getTodoByUserId(userId: string) {
+
+        return await database.listDocuments(
+            config.appwriteDatabaseId,
+            config.appwriteCollectionTodosId,
+            [
+                Query.equal('user', [userId]),
+                Query.orderDesc('$createdAt')
+            ]
+        )
     }
 }
 
