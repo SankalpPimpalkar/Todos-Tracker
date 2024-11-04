@@ -13,25 +13,26 @@ export default function TodoHistory() {
     const { userData } = useAuth();
     const [history, setHistory] = useState<any>([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [order, setOrder] = useState(0)
 
     const getTodos = async () => {
         if (userData) {
-            const todos = await appwriteService.getTodoByUserId(userData.$id);
+            setIsRefreshing(true);
+            const todos = await appwriteService.getTodoByUserId(userData.$id, order);
             const formattedTodos = formatToHistory(todos.documents)
             setHistory(formattedTodos)
             console.log("History Todos", formattedTodos)
+            setIsRefreshing(false);
         }
     }
 
     const handleRefresh = async () => {
-        setIsRefreshing(true);
         await getTodos();
-        setIsRefreshing(false);
     }
 
     useEffect(() => {
         getTodos()
-    }, [userData])
+    }, [userData, order])
 
     return (
         <div className='w-full bg-black text-light md:p-10 hidden xl:block'>
@@ -39,16 +40,25 @@ export default function TodoHistory() {
                 Todo History
             </h1>
 
-            <button onClick={handleRefresh} disabled={isRefreshing} className='mt-3 bg-warm text-black font-medium text-sm px-4 py-2 rounded flex items-center gap-2 disabled:bg-warm/80'>
-                {
-                    isRefreshing && (
-                        <LoaderCircle className='animate-spin w-5 h-5' />
-                    )
-                }
-                Refresh
-            </button>
+            <div className='flex items-center gap-2'>
+                <button onClick={handleRefresh} disabled={isRefreshing} className='mt-3 bg-warm text-black font-medium text-sm px-4 py-2 rounded flex items-center gap-2 disabled:bg-warm/80'>
+                    {
+                        isRefreshing ? (
+                            <>
+                                <LoaderCircle className='animate-spin w-5 h-5' />
+                                <p>Fetching todos</p>
+                            </>
+                        ) :
+                            'Refresh'
+                    }
+                </button>
 
-            <div className='mt-3 space-y-6 overflow-y-auto h-full max-h-[40rem]'>
+                <button onClick={() => setOrder(order ? 0 : 1)} disabled={isRefreshing} className='mt-3 bg-warm text-black font-medium text-sm px-4 py-2 rounded flex items-center gap-2 disabled:bg-warm/80'>
+                    Change Order
+                </button>
+            </div>
+
+            <div style={{ scrollbarWidth: 'none' }} className='mt-3 space-y-6 overflow-y-auto h-full max-h-[78.1vh]'>
                 {
                     history.length > 0 ? history.map((elem: any) => (
                         <div key={elem.month}>

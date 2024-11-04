@@ -180,14 +180,16 @@ export class AppwriteService {
         return todos;
     }
 
-    async getTodoByUserId(userId: string) {
+    async getTodoByUserId(userId: string, order = 0) {
 
         return await database.listDocuments(
             config.appwriteDatabaseId,
             config.appwriteCollectionTodosId,
             [
                 Query.equal('user', [userId]),
-                Query.orderDesc('$createdAt')
+                !order ?
+                    Query.orderDesc('$createdAt') :
+                    Query.orderAsc('$createdAt')
             ]
         )
     }
