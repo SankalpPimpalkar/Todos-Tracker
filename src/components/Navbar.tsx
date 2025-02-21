@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { History, LoaderCircle, Plus, UsersRound, X } from "lucide-react";
+import { History, LoaderCircle, Plus, X } from "lucide-react";
 import React, { FormEvent, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
