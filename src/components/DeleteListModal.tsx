@@ -4,6 +4,7 @@ import { LoaderCircle } from 'lucide-react';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/context/useAuth';
+import { toast } from 'react-toastify';
 
 export default function DeleteListModal({ isOpen, setIsModalOpen, setSelectedList, selectedList }: any) {
 
@@ -22,6 +23,7 @@ export default function DeleteListModal({ isOpen, setIsModalOpen, setSelectedLis
         if (selectedList) {
             const status = await appwriteService.deleteList(selectedList);
             console.log("Status", status);
+            toast.success('List has been deleted')
         }
 
         setIsDeletingList(false);
@@ -43,14 +45,14 @@ export default function DeleteListModal({ isOpen, setIsModalOpen, setSelectedLis
                 <div className="flex justify-end space-x-4 mt-6">
                     <button
                         disabled={isDeletingList}
-                        className="px-4 py-2 w-full sm:w-fit bg-secondary active:bg-secondary/70 text-sm text-light rounded-md disabled:bg-secondary/70"
+                        className="px-4 py-2 w-full sm:w-fit bg-secondary active:bg-secondary/70 text-sm text-light rounded-md disabled:bg-secondary/70 cursor-pointer"
                         onClick={handleCancel}
                     >
                         Cancel
                     </button>
                     <button
                         disabled={isDeletingList}
-                        className="px-4 py-2 w-full sm:w-fit bg-warm active:bg-warm/80 text-black text-sm font-medium rounded-md flex items-center justify-center gap-2 disabled:bg-warm/80"
+                        className="px-4 py-2 w-full sm:w-fit bg-warm active:bg-warm/80 text-black text-sm font-medium rounded-md flex items-center justify-center gap-2 disabled:bg-warm/80 cursor-pointer"
                         onClick={handleDeleteList}>
                         {
                             isDeletingList && (

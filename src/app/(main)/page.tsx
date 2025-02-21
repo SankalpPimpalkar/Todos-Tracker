@@ -4,12 +4,14 @@ import useAuth from '@/context/useAuth';
 import { LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function Home() {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { userData, reFetchUser } = useAuth();
   const router = useRouter();
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +28,7 @@ export default function Home() {
 
     setTitle("");
     setIsLoading(false);
+    toast.success('New list has been created')
   };
 
   return (
@@ -34,7 +37,7 @@ export default function Home() {
         Ready to start a new list?
       </p>
 
-      <form onSubmit={handleSubmit} className="w-full max-w-md md:pt-6 rounded-lg">
+      <form onSubmit={handleSubmit} className="w-full md:pt-6 rounded-lg">
         <label className='block text-light/70 font-semibold mb-2 text-lg' htmlFor="title">
           Give a title
         </label>

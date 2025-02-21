@@ -7,12 +7,14 @@ import useAuth from '@/context/useAuth';
 import appwriteService from '@/appwrite/functions';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
     const [form, setForm] = useState({ name: '', email: '', password: '' });
     const { setAuthStatus } = useAuth();
     const router = useRouter();
     const [isSigningUp, setIsSigningUp] = useState(false);
+    const [error, setError] = useState('')
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -20,22 +22,37 @@ export default function SignUp() {
             ...form,
             [name]: value,
         });
+
+        if (name == 'password' && value.length < 8) {
+            setError('Password should be atleast 8 characters long')
+        } else {
+            setError('')
+        }
     };
 
     const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        setIsSigningUp(true);
-
-        const user = await appwriteService.createAccount(form);
-
-        if (user) {
-            console.log(user);
-            setAuthStatus(true);
-            router.push('/');
+        try {
+            e.preventDefault();
+            setIsSigningUp(true);
+    
+            const user = await appwriteService.createAccount(form);
+    
+            if (user) {
+                console.log(user);
+                setAuthStatus(true);
+                toast.success('New User created')
+                router.push('/');
+            }
+    
+            setForm({ name: '', email: '', password: '' });
+        } catch (error:any) {
+            console.log('Signup Error', error)
+            if (error.message == 'A user with the same id, email, or phone already exists in this project.') {
+                setError('User already exists with this email')
+            }
+        } finally {
+            setIsSigningUp(false);
         }
-
-        setIsSigningUp(false);
-        setForm({ name: '', email: '', password: '' });
     };
 
     return (
@@ -78,7 +95,7 @@ export default function SignUp() {
 
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-light/80 mb-1">
-                            Password
+                            Set a Password
                         </label>
                         <input
                             type="password"
@@ -87,9 +104,11 @@ export default function SignUp() {
                             value={form.password}
                             onChange={handleChange}
                             className="w-full px-4 py-2 text-sm border rounded-lg bg-primary text-light/90 border-secondary/40 focus:outline-none focus:border-secondary/60"
-                            placeholder="Enter your password"
+                            placeholder="Set a strong password"
                         />
                     </div>
+
+                    {error.trim() && <p className="text-red-300 text-sm">*{error}</p>}
 
                     <button
                         type="submit"

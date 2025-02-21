@@ -30,7 +30,7 @@ export default function TodoHistory() {
     };
 
     return (
-        <div className='bg-black text-light pt-20 px-6 w-full min-h-dvh md:px-10 block lg:hidden'>
+        <div className='bg-black text-light pt-20 md:pt-12 px-6 w-full min-h-dvh md:px-10 block lg:hidden'>
             <h1 className='text-3xl font-bold text-light/90 mb-5'>Todo History</h1>
 
             <div className='space-y-6 h-full'>

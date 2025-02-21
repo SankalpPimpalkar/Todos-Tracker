@@ -42,7 +42,9 @@ export class AppwriteService {
     async login({ email, password }: UserLogin) {
         try {
 
-            return await account.createEmailPasswordSession(email, password)
+            const session =  await account.createEmailPasswordSession(email, password)
+
+            return session
 
         } catch (error) {
             console.log("login error", error)

@@ -10,6 +10,7 @@ import greetByTime from '@/utils/greetByTime'
 import ListSkeleton from '@/components/ListSkeleton';
 import useAuth from '@/context/useAuth';
 import { LoaderCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 export default function List() {
 
@@ -55,6 +56,7 @@ export default function List() {
         if (newTodoList) {
             setTodos(newTodoList.todos);
             setNewTodoContent("");
+            toast.success('New todo created')
         }
         setIsAddingNewTodo(false);
     };
